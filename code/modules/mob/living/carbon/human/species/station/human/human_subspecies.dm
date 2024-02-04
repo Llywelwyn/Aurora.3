@@ -32,19 +32,11 @@
 	H.put_in_hands(PB)
 
 /datum/species/human/offworlder/get_species_tally(var/mob/living/carbon/human/H)
-
-	if(istype(H.back, /obj/item/rig/light/offworlder))
-		var/obj/item/rig/light/offworlder/rig = H.back
-		if(!rig.offline)
-			return 0
-		else
-			return 3
-
 	var/obj/item/organ/external/l_leg = H.get_organ(BP_L_LEG)
 	var/obj/item/organ/external/r_leg = H.get_organ(BP_R_LEG)
 
 	if((l_leg.status & ORGAN_ROBOT) && (r_leg.status & ORGAN_ROBOT))
-		return
+		return 0
 
 	if(H.w_uniform)
 		var/obj/item/clothing/under/suit = H.w_uniform
@@ -56,6 +48,13 @@
 		for(var/_R in S.ingested.reagent_volumes)
 			if(_R == /singleton/reagent/rmt)
 				return 0
+
+	if(istype(H.back, /obj/item/rig/light/offworlder))
+	var/obj/item/rig/light/offworlder/rig = H.back
+	if(!rig.offline)
+		return 0
+	else
+		return 3
 
 	return 4
 
