@@ -1,11 +1,11 @@
-import { InfernoNode } from 'inferno';
+import type { ReactNode } from 'react';
+import { Box, Button, Flex, Icon, Stack } from 'tgui-core/components';
 import { useBackend } from '../../backend';
-import { Box, Button, Flex, Icon, Stack } from '../../components';
 import { GetUserByAddress } from './helpers';
 import { CommunicatorData, CommunicatorTab } from './types';
 
-export const CommunicatorCallTab = (props, context) => {
-  const { act, data } = useBackend<CommunicatorData>(context);
+export const CommunicatorCallTab = (props) => {
+  const { act, data } = useBackend<CommunicatorData>();
   const { activeCall, callRequests, userComm } = data;
 
   const incomingCall = !!callRequests.incoming.length;
@@ -121,15 +121,12 @@ export const CommunicatorCallTab = (props, context) => {
   );
 };
 
-const CallScreen = (
-  props: {
-    name?: string;
-    subtitle: string;
-    centerItem?: InfernoNode;
-    buttons: InfernoNode;
-  },
-  context,
-) => {
+const CallScreen = (props: {
+  name?: string;
+  subtitle: string;
+  centerItem?: ReactNode;
+  buttons: ReactNode;
+}) => {
   const { name, subtitle, centerItem, buttons } = props;
 
   return (
@@ -149,8 +146,8 @@ const CallScreen = (
   );
 };
 
-const OptionButtons = (props, context) => {
-  const { act, data } = useBackend<CommunicatorData>(context);
+const OptionButtons = (props) => {
+  const { act, data } = useBackend<CommunicatorData>();
   const { speakerphoneOn, microphoneOn } = data.callSettings;
 
   // TODO: Improve styling. These look pretty bad at the moment.
@@ -160,7 +157,7 @@ const OptionButtons = (props, context) => {
         <Button onClick={() => act('toggle_mute')}>
           <Icon
             name={microphoneOn ? 'microphone' : 'microphone-slash'}
-            color={!microphoneOn && 'red'}
+            color={microphoneOn ? undefined : 'red'}
           />
         </Button>
         <Box>Mute</Box>
@@ -177,7 +174,7 @@ const OptionButtons = (props, context) => {
         <Button onClick={() => act('toggle_speakerphone')}>
           <Icon
             name={speakerphoneOn ? 'volume-high' : 'volume-xmark'}
-            color={!speakerphoneOn && 'red'}
+            color={speakerphoneOn ? undefined : 'red'}
           />
         </Button>
         <Box>Speaker</Box>
@@ -208,8 +205,8 @@ const OptionButtons = (props, context) => {
   );
 };
 
-const ConnectingSpinner = (props, context) => {
-  const { act, data } = useBackend<CommunicatorData>(context);
+const ConnectingSpinner = (props) => {
+  const { act, data } = useBackend<CommunicatorData>();
   const { callRequests, userComm } = data;
 
   const connectingAddress =

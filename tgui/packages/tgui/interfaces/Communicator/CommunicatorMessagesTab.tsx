@@ -1,13 +1,12 @@
+import { Box, Button, Flex, Icon, Section } from 'tgui-core/components';
 import { useBackend, useLocalState } from '../../backend';
-import { Box, Button, Flex, Icon, Section } from '../../components';
 import { CommunicatorData, CommunicatorTab, TextChat } from './types';
 
-export const CommunicatorMessagesTab = (props, context) => {
-  const { act, data } = useBackend<CommunicatorData>(context);
+export const CommunicatorMessagesTab = (props) => {
+  const { act, data } = useBackend<CommunicatorData>();
   const { activeChats } = data;
 
   const [selectedChatAddr, setSelectedChatAddr] = useLocalState<string | null>(
-    context,
     'SelectedChatAddr',
     null,
   );
@@ -50,16 +49,15 @@ export const CommunicatorMessagesTab = (props, context) => {
   );
 };
 
-const ChatView = ({ selectedChat }: { selectedChat: TextChat }, context) => {
+const ChatView = ({ selectedChat }: { selectedChat: TextChat }) => {
   return <Box>chat view placeholder</Box>;
 };
 
-const AllChatList = (props, context) => {
-  const { act, data } = useBackend<CommunicatorData>(context);
+const AllChatList = (props) => {
+  const { act, data } = useBackend<CommunicatorData>();
   const { activeChats, allUsers } = data;
 
   const [selectedChatAddr, setSelectedChatAddr] = useLocalState<string | null>(
-    context,
     'SelectedChatAddr',
     null,
   );

@@ -1,7 +1,3 @@
-import { classes } from 'common/react';
-import { InfernoKeyboardEvent } from 'inferno';
-import { KEY } from '../../../common/keys';
-import { useBackend, useLocalState } from '../../backend';
 import {
   Box,
   Button,
@@ -10,7 +6,10 @@ import {
   Input,
   Section,
   Stack,
-} from '../../components';
+} from 'tgui-core/components';
+import { KEY } from 'tgui-core/keys';
+import { classes } from 'tgui-core/react';
+import { useBackend, useLocalState } from '../../backend';
 import { FriendsList } from './CommunicatorContactTab';
 import { GetUserByAddress } from './helpers';
 import { CommunicatorData } from './types';
@@ -57,11 +56,10 @@ function FormatAddress(newValue: string) {
   return formatted;
 }
 
-export const CommunicatorPhoneTab = (props, context) => {
-  const { act, data } = useBackend<CommunicatorData>(context);
+export const CommunicatorPhoneTab = (props) => {
+  const { act, data } = useBackend<CommunicatorData>();
 
   const [targetAddress, setTargetAddress] = useLocalState(
-    context,
     'targetAddress',
     '',
   );
@@ -102,7 +100,7 @@ export const CommunicatorPhoneTab = (props, context) => {
                 icon="phone"
                 fluid
                 disabled={!targetAddress}
-                color={targetAddrIsValid && 'green'}
+                color={targetAddrIsValid ? 'green' : undefined}
                 onClick={() => {
                   act('call_request', {
                     action: 'send',
@@ -120,7 +118,7 @@ export const CommunicatorPhoneTab = (props, context) => {
                 icon="comment-alt"
                 fluid
                 disabled={!targetAddress}
-                color={targetAddrIsValid && 'green'}
+                color={targetAddrIsValid ? 'green' : undefined}
               >
                 Message
               </Button>
@@ -142,17 +140,15 @@ export const CommunicatorPhoneTab = (props, context) => {
   );
 };
 
-const AutocompleteInput = (props, context) => {
-  const { act, data } = useBackend<CommunicatorData>(context);
+const AutocompleteInput = (props) => {
+  const { act, data } = useBackend<CommunicatorData>();
 
   const [targetAddress, setTargetAddress] = useLocalState(
-    context,
     'targetAddress',
     '',
   );
 
   const [suggestedTargetIdx, setSuggestedTargetIdx] = useLocalState(
-    context,
     'suggestedTargetIdx',
     0,
   );
@@ -179,7 +175,7 @@ const AutocompleteInput = (props, context) => {
               .padStart(MAX_ADDRESS_LEN, ' ')}
           </Box>
           <Box
-            class={classes([
+            className={classes([
               'autocomplete',
               'name',
               targetAddress === suggestedTargetAddress && 'completed',
@@ -198,9 +194,10 @@ const AutocompleteInput = (props, context) => {
       <Input
         fluid
         monospace
+        alwaysUpdate
         value={targetAddress}
         maxLength={MAX_ADDRESS_LEN}
-        onKeyDown={(event: InfernoKeyboardEvent<HTMLInputElement>) => {
+        onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
           if (!suggestedTargetAddress) return;
           switch (event.key) {
             case KEY.Tab:
@@ -233,13 +230,9 @@ const AutocompleteInput = (props, context) => {
         }}
         // Every time this input has its value changed, format everything to
         // make sure that it stays address-ey.
-        onInput={(
-          event: InfernoKeyboardEvent<HTMLInputElement>,
-          value: string,
-        ) => {
+        onChange={(value) => {
           const formattedValue = FormatAddress(value);
           setTargetAddress(formattedValue);
-          event.currentTarget.value = formattedValue;
 
           // If the new value has less than 2 possible matches,
           // reset `suggestedTargetIdx` to avoid it going "out of bounds".

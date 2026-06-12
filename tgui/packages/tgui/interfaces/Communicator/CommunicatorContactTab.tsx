@@ -1,5 +1,4 @@
-import { InfernoNode } from 'inferno';
-import { useBackend, useLocalState } from '../../backend';
+import type { ReactNode } from 'react';
 import {
   Box,
   Button,
@@ -8,12 +7,13 @@ import {
   LabeledList,
   Section,
   Tooltip,
-} from '../../components';
+} from 'tgui-core/components';
+import { useBackend, useLocalState } from '../../backend';
 import { SortUsersByName, UserIsActive } from './helpers';
 import { CommunicatorData, CommunicatorTab, UserDetails } from './types';
 
-export const CommunicatorContactTab = (props, context) => {
-  const { act, data } = useBackend<CommunicatorData>(context);
+export const CommunicatorContactTab = (props) => {
+  const { act, data } = useBackend<CommunicatorData>();
   const { allUsers } = data;
 
   const publicUsers = SortUsersByName(allUsers.filter((user) => user.visible));
@@ -45,8 +45,8 @@ export const CommunicatorContactTab = (props, context) => {
 };
 
 // Exported separately for use in the phone tab.
-export const FriendsList = (props, context) => {
-  const { act, data } = useBackend<CommunicatorData>(context);
+export const FriendsList = (props) => {
+  const { act, data } = useBackend<CommunicatorData>();
   const { friendsList } = data;
 
   const allFriends = SortUsersByName(
@@ -86,7 +86,7 @@ export const FriendsList = (props, context) => {
                       <Box inline bold color="bad">
                         ERROR:&nbsp;
                       </Box>
-                      <Box inline style={{ 'text-decoration': 'line-through' }}>
+                      <Box inline style={{ textDecoration: 'line-through' }}>
                         {friend.address}
                       </Box>
                     </Box>
@@ -108,23 +108,18 @@ export const FriendsList = (props, context) => {
 
 type ContactListingProps = {
   contact: UserDetails;
-  text: InfernoNode;
-  ExtraButton?: (props: { contact: UserDetails }, context) => JSX.Element;
+  text: ReactNode;
+  ExtraButton?: (props: { contact: UserDetails }) => ReactNode;
 };
 
-const ContactListing = (
-  { contact, text, ExtraButton }: ContactListingProps,
-  context,
-) => {
-  const { act, data } = useBackend<CommunicatorData>(context);
+const ContactListing = ({ contact, text, ExtraButton }: ContactListingProps) => {
+  const { act, data } = useBackend<CommunicatorData>();
 
   const [targetAddress, setTargetAddress] = useLocalState(
-    context,
     'targetAddress',
     '',
   );
   const [selectedChatAddr, setSelectedChatAddr] = useLocalState<string | null>(
-    context,
     'SelectedChatAddr',
     null,
   );
@@ -175,8 +170,8 @@ const ContactListing = (
   );
 };
 
-const FriendReqButton = ({ contact }: { contact: UserDetails }, context) => {
-  const { act, data } = useBackend<CommunicatorData>(context);
+const FriendReqButton = ({ contact }: { contact: UserDetails }) => {
+  const { act, data } = useBackend<CommunicatorData>();
 
   const alreadyFriends = data.friendsList.active.find(
     (friend) => friend.username === contact.username,
@@ -191,7 +186,7 @@ const FriendReqButton = ({ contact }: { contact: UserDetails }, context) => {
   return (
     <Button
       icon="user-plus"
-      disabled={alreadyFriends || requestSentToContact}
+      disabled={!!alreadyFriends || requestSentToContact}
       tooltip={
         alreadyFriends
           ? 'Already friends!'
@@ -200,7 +195,7 @@ const FriendReqButton = ({ contact }: { contact: UserDetails }, context) => {
             : 'Send friend request'
       }
       tooltipPosition="bottom"
-      color={contactSentRequest && 'average'}
+      color={contactSentRequest ? 'average' : undefined}
       onClick={() => {
         act('friend_request', {
           action: contactSentRequest ? 'respond' : 'send',
@@ -211,8 +206,8 @@ const FriendReqButton = ({ contact }: { contact: UserDetails }, context) => {
   );
 };
 
-const RemoveFriendButton = ({ contact }: { contact: UserDetails }, context) => {
-  const { act, data } = useBackend<CommunicatorData>(context);
+const RemoveFriendButton = ({ contact }: { contact: UserDetails }) => {
+  const { act, data } = useBackend<CommunicatorData>();
 
   return (
     <Button.Confirm

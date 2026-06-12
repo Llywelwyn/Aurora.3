@@ -1,4 +1,3 @@
-import { useBackend, useLocalState } from '../../backend';
 import {
   Box,
   Button,
@@ -8,11 +7,12 @@ import {
   Section,
   Stack,
   Tabs,
-} from '../../components';
+} from 'tgui-core/components';
+import { useBackend, useLocalState } from '../../backend';
 import { CommunicatorData, RequestsList } from './types';
 
-export const CommunicatorSettingsTab = (props, context) => {
-  const { act, data } = useBackend<CommunicatorData>(context);
+export const CommunicatorSettingsTab = (props) => {
+  const { act, data } = useBackend<CommunicatorData>();
   const { userComm, silent, callRequests, friendRequests } = data;
 
   return (
@@ -21,10 +21,8 @@ export const CommunicatorSettingsTab = (props, context) => {
         <LabeledList.Item label="Display Name">
           <Button.Input
             fluid
-            content={userComm.username}
-            currentValue={userComm.username}
-            defaultValue="__reset" // this is weird but it works
-            onCommit={(_, value) => act('set_username', { new_name: value })}
+            value={userComm.username}
+            onCommit={(value) => act('set_username', { new_name: value })}
           />
         </LabeledList.Item>
         <LabeledList.Item label="NTNet Address">
@@ -74,10 +72,11 @@ export const CommunicatorSettingsTab = (props, context) => {
               <Button.Confirm
                 fluid
                 bold
-                content="Confirm"
                 confirmContent="Are you sure?"
                 onClick={() => act('reset_device')}
-              />
+              >
+                Confirm
+              </Button.Confirm>
             </Stack.Item>
           </Stack>
         </LabeledList.Item>
@@ -86,8 +85,8 @@ export const CommunicatorSettingsTab = (props, context) => {
   );
 };
 
-const RequestsTable = (props, context) => {
-  const { act, data } = useBackend<CommunicatorData>(context);
+const RequestsTable = (props) => {
+  const { act, data } = useBackend<CommunicatorData>();
   const { callRequests, friendRequests } = data;
 
   enum RequestsTab {
@@ -96,7 +95,6 @@ const RequestsTable = (props, context) => {
   }
 
   const [requestsTab, setRequestsTab] = useLocalState(
-    context,
     'requestsTab',
     RequestsTab.Incoming,
   );

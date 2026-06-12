@@ -1,5 +1,6 @@
+import type { ReactNode } from 'react';
+import { Box, Button, Flex, Icon, Section, Stack } from 'tgui-core/components';
 import { useBackend } from '../../backend';
-import { Box, Button, Flex, Icon, Section, Stack } from '../../components';
 import { NtosWindow } from '../../layouts';
 import { CommunicatorCallTab } from './CommunicatorCallTab';
 import { CommunicatorContactTab } from './CommunicatorContactTab';
@@ -9,8 +10,8 @@ import { CommunicatorPhoneTab } from './CommunicatorPhoneTab';
 import { CommunicatorSettingsTab } from './CommunicatorSettingsTab';
 import { CommunicatorData, CommunicatorTab } from './types';
 
-export const Communicator = (props, context) => {
-  const { act, data } = useBackend<CommunicatorData>(context);
+export const Communicator = (props) => {
+  const { act, data } = useBackend<CommunicatorData>();
 
   return (
     <NtosWindow width={475} height={700}>
@@ -21,10 +22,10 @@ export const Communicator = (props, context) => {
   );
 };
 
-const NormalScreen = (props, context) => {
-  const { act, data } = useBackend<CommunicatorData>(context);
+const NormalScreen = (props) => {
+  const { act, data } = useBackend<CommunicatorData>();
 
-  const tabs: { [tab in CommunicatorTab]: JSX.Element } = {
+  const tabs: { [tab in CommunicatorTab]: ReactNode } = {
     [CommunicatorTab.Home]: <CommunicatorHomeTab />,
     [CommunicatorTab.Phone]: <CommunicatorPhoneTab />,
     [CommunicatorTab.Contacts]: <CommunicatorContactTab />,
@@ -45,8 +46,8 @@ const NormalScreen = (props, context) => {
   );
 };
 
-const FooterButtons = (props, context) => {
-  const { act, data } = useBackend<CommunicatorData>(context);
+const FooterButtons = (props) => {
+  const { act, data } = useBackend<CommunicatorData>();
 
   const activeCall = !!data.activeCall;
   const incomingCall = !!data.callRequests.incoming.length;
